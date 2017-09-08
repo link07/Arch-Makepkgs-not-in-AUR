@@ -1,5 +1,5 @@
 # $Id$
-# Maintainer: Balló György <ballogyor+arch at gmail dot com>
+# Maintainer: link07 <link07@users.noreply.github.com>
 
 pkgname=budgie-desktop
 _helper_pkgname=budgie-helper
