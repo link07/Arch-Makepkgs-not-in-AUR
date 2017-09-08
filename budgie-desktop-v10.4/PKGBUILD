@@ -10,7 +10,7 @@ pkgdesc="Modern desktop environment from the Solus Project"
 arch=('i686' 'x86_64')
 url="https://solus-project.com/budgie"
 license=('GPL' 'LGPL')
-depends=('accountsservice' 'gnome-bluetooth' 'gnome-menus' 'gnome-session' 'gnome-themes-standard' 'libibus' 'libpeas' 'libwnck3' 'mutter')
+depends=('accountsservice' 'gnome-bluetooth' 'gnome-menus' 'gnome-session' 'gnome-themes-standard' 'libibus' 'libpeas' 'libwnck3' 'mutter' )
 makedepends=('autoconf-archive' 'git' 'gobject-introspection' 'intltool' 'meson' 'vala' 'sassc')
 optdepends=('gnome-backgrounds: Default background'
             'gnome-control-center: System settings'
@@ -48,7 +48,9 @@ build() {
 
 	cd "$srcdir/$_helper_pkgname-$_helper_gitrev"
 	./configure --prefix=/usr --sysconfdir=/etc --disable-schemas-compile --disable-Werror
-	make
+
+	CORES=$(grep -c ^processor /proc/cpuinfo)
+	make -j$CORES
 }
 
 package() {
