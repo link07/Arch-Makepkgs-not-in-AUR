@@ -1,0 +1,109 @@
+# $Id$
+# Maintainer : Tyler Holinka <TylerHolinka+arch@gmail.com>
+# Contributor: Christian Rebischke <Chris.Rebischke@archlinux.org>
+# Contributor: Timothy Redaelli <timothy.redaelli@gmail.com>
+# Contributor: shahid <helllamer@gmail.com>
+
+#_dbver=4.8.30
+pkgbase=litecoin
+pkgname=('litecoin-daemon' 'litecoin-cli' 'litecoin-qt' 'litecoin-tx')
+pkgver=0.14.2
+pkgrel=1
+arch=('all')
+url="https://www.bitcoin.org/"
+makedepends=('boost' 'libevent' 'qt5-base' 'qt5-tools' 'qrencode' 'miniupnpc' 'protobuf' 'zeromq')
+license=('MIT')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/litecoin-project/litecoin/archive/v0.14.2.tar.gz"
+        "bitcoin.sysusers"
+        "bitcoin.tmpfiles")
+sha256sums=('4db5473be17fc707acfa4bc5d13b5c07915fa8c28b404ca0e6969fecc41744b2'
+            '6f70b0d3d5e4a3f78b15d8f49515cd33cbf0c9d2ac22f94f0d3fabb3f620e458'
+            'b769c977b193680f2f549997fd8e07f6aa507071dfd519d59255ab4c687ebfcd')
+
+prepare() {
+  cd "$pkgbase-$pkgver"
+}
+
+build() {
+  cd $pkgbase-$pkgver
+  
+  ./autogen.sh
+  
+  ./configure CXXFLAGS="--param ggc-min-expand=1 --param ggc-min-heapsize=32768" --prefix=/usr --with-gui=qt5 --with-incompatible-bdb #LDFLAGS="-L$srcdir/db4/lib/ $LDFLAGS" CPPFLAGS="-I$srcdir/db4/include/ $CPPFLAGS"
+  
+  make
+}
+
+check() {
+    cd $pkgbase-$pkgver
+    
+    make check
+}
+
+package_litecoin-qt() {
+  pkgdesc="Litecoin is a peer-to-peer network based digital currency - Qt"
+  depends=(boost-libs libevent qt5-base miniupnpc qrencode protobuf zeromq)
+
+  cd $pkgbase-$pkgver
+  install -Dm755 src/qt/bitcoin-qt "$pkgdir"/usr/bin/bitcoin-qt
+  install -Dm644 doc/man/bitcoin-qt.1 \
+    "$pkgdir"/usr/share/man/man1/bitcoin-qt.1
+  install -Dm644 contrib/debian/bitcoin-qt.desktop \
+    "$pkgdir"/usr/share/applications/bitcoin.desktop
+  install -Dm644 share/pixmaps/bitcoin128.png \
+    "$pkgdir"/usr/share/pixmaps/bitcoin128.png
+
+  install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
+}
+
+package_litecoin-daemon() {
+  pkgdesc="Litecoin is a peer-to-peer network based digital currency - daemon"
+  depends=(boost-libs libevent miniupnpc zeromq)
+
+  cd $pkgbase-$pkgver
+  install -Dm755 src/bitcoind "$pkgdir"/usr/bin/bitcoind
+  install -Dm644 contrib/bitcoind.bash-completion \
+    "$pkgdir"/usr/share/bash-completion/completions/bitcoind
+  install -Dm644 doc/man/bitcoind.1 \
+    "$pkgdir"/usr/share/man/man1/bitcoind.1
+  install -Dm644 contrib/debian/examples/bitcoin.conf \
+    "$pkgdir/usr/share/doc/$pkgname/examples/bitcoin.conf"
+  install -Dm644 contrib/init/bitcoind.service \
+    "$pkgdir/usr/lib/systemd/system/bitcoind.service"
+  install -Dm644 "$srcdir/bitcoin.sysusers" \
+    "$pkgdir/usr/lib/sysusers.d/bitcoin.conf"
+  install -Dm644 "$srcdir/bitcoin.tmpfiles" \
+    "$pkgdir/usr/lib/tmpfiles.d/bitcoin.conf"
+
+  install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
+}
+
+package_litecoin-cli() {
+  pkgdesc="Litecoin is a peer-to-peer network based digital currency - RPC client"
+  depends=(boost-libs libevent)
+
+  cd $pkgbase-$pkgver
+  install -Dm755 src/bitcoin-cli "$pkgdir"/usr/bin/bitcoin-cli
+  install -Dm644 contrib/bitcoin-cli.bash-completion \
+    "$pkgdir"/usr/share/bash-completion/completions/bitcoin-cli
+  install -Dm644 doc/man/bitcoin-cli.1 \
+    "$pkgdir"/usr/share/man/man1/bitcoin-cli.1
+
+  install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
+}
+
+package_litecoin-tx() {
+  pkgdesc="Litecoin is a peer-to-peer network based digital currency - Transaction tool"
+  depends=(boost-libs openssl)
+
+  cd $pkgbase-$pkgver
+  install -Dm755 src/bitcoin-tx "$pkgdir"/usr/bin/bitcoin-tx
+  install -Dm644 contrib/bitcoin-tx.bash-completion \
+    "$pkgdir"/usr/share/bash-completion/completions/bitcoin-tx
+  install -Dm644 doc/man/bitcoin-tx.1 \
+    "$pkgdir"/usr/share/man/man1/bitcoin-tx.1
+
+  install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
+}
+
+# vim:set ts=2 sw=2 et:
