@@ -10,12 +10,12 @@ pkgname=('litecoin-daemon' 'litecoin-cli' 'litecoin-qt' 'litecoin-tx')
 pkgver=0.14.2
 pkgrel=1
 arch=('all')
-url="https://www.bitcoin.org/"
+url="https://www.litecoin.org/"
 makedepends=('boost' 'libevent' 'qt5-base' 'qt5-tools' 'qrencode' 'miniupnpc' 'protobuf' 'zeromq')
 license=('MIT')
 source=("$pkgname-$pkgver.tar.gz::https://github.com/litecoin-project/litecoin/archive/v0.14.2.tar.gz"
-        "bitcoin.sysusers"
-        "bitcoin.tmpfiles")
+        "litecoin.sysusers"
+        "litecoin.tmpfiles")
 sha256sums=('4db5473be17fc707acfa4bc5d13b5c07915fa8c28b404ca0e6969fecc41744b2'
             '6f70b0d3d5e4a3f78b15d8f49515cd33cbf0c9d2ac22f94f0d3fabb3f620e458'
             'b769c977b193680f2f549997fd8e07f6aa507071dfd519d59255ab4c687ebfcd')
@@ -45,13 +45,13 @@ package_litecoin-qt() {
   depends=(boost-libs libevent qt5-base miniupnpc qrencode protobuf zeromq)
 
   cd $pkgbase-$pkgver
-  install -Dm755 src/qt/bitcoin-qt "$pkgdir"/usr/bin/bitcoin-qt
-  install -Dm644 doc/man/bitcoin-qt.1 \
-    "$pkgdir"/usr/share/man/man1/bitcoin-qt.1
-  install -Dm644 contrib/debian/bitcoin-qt.desktop \
-    "$pkgdir"/usr/share/applications/bitcoin.desktop
-  install -Dm644 share/pixmaps/bitcoin128.png \
-    "$pkgdir"/usr/share/pixmaps/bitcoin128.png
+  install -Dm755 src/qt/litecoin-qt "$pkgdir"/usr/bin/litecoin-qt
+  install -Dm644 doc/man/litecoin-qt.1 \
+    "$pkgdir"/usr/share/man/man1/litecoin-qt.1
+  install -Dm644 contrib/debian/litecoin-qt.desktop \
+    "$pkgdir"/usr/share/applications/litecoin.desktop
+  install -Dm644 share/pixmaps/litecoin128.png \
+    "$pkgdir"/usr/share/pixmaps/litecoin128.png
 
   install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
 }
@@ -61,19 +61,19 @@ package_litecoin-daemon() {
   depends=(boost-libs libevent miniupnpc zeromq)
 
   cd $pkgbase-$pkgver
-  install -Dm755 src/bitcoind "$pkgdir"/usr/bin/bitcoind
-  install -Dm644 contrib/bitcoind.bash-completion \
-    "$pkgdir"/usr/share/bash-completion/completions/bitcoind
-  install -Dm644 doc/man/bitcoind.1 \
-    "$pkgdir"/usr/share/man/man1/bitcoind.1
-  install -Dm644 contrib/debian/examples/bitcoin.conf \
-    "$pkgdir/usr/share/doc/$pkgname/examples/bitcoin.conf"
-  install -Dm644 contrib/init/bitcoind.service \
-    "$pkgdir/usr/lib/systemd/system/bitcoind.service"
-  install -Dm644 "$srcdir/bitcoin.sysusers" \
-    "$pkgdir/usr/lib/sysusers.d/bitcoin.conf"
-  install -Dm644 "$srcdir/bitcoin.tmpfiles" \
-    "$pkgdir/usr/lib/tmpfiles.d/bitcoin.conf"
+  install -Dm755 src/litecoind "$pkgdir"/usr/bin/litecoind
+  install -Dm644 contrib/litecoind.bash-completion \
+    "$pkgdir"/usr/share/bash-completion/completions/litecoind
+  install -Dm644 doc/man/litecoind.1 \
+    "$pkgdir"/usr/share/man/man1/litecoind.1
+  install -Dm644 contrib/debian/examples/litecoin.conf \
+    "$pkgdir/usr/share/doc/$pkgname/examples/litecoin.conf"
+  install -Dm644 contrib/init/litecoind.service \
+    "$pkgdir/usr/lib/systemd/system/litecoind.service"
+  install -Dm644 "$srcdir/litecoin.sysusers" \
+    "$pkgdir/usr/lib/sysusers.d/litecoin.conf"
+  install -Dm644 "$srcdir/litecoin.tmpfiles" \
+    "$pkgdir/usr/lib/tmpfiles.d/litecoin.conf"
 
   install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
 }
@@ -83,11 +83,11 @@ package_litecoin-cli() {
   depends=(boost-libs libevent)
 
   cd $pkgbase-$pkgver
-  install -Dm755 src/bitcoin-cli "$pkgdir"/usr/bin/bitcoin-cli
-  install -Dm644 contrib/bitcoin-cli.bash-completion \
-    "$pkgdir"/usr/share/bash-completion/completions/bitcoin-cli
-  install -Dm644 doc/man/bitcoin-cli.1 \
-    "$pkgdir"/usr/share/man/man1/bitcoin-cli.1
+  install -Dm755 src/litecoin-cli "$pkgdir"/usr/bin/litecoin-cli
+  install -Dm644 contrib/litecoin-cli.bash-completion \
+    "$pkgdir"/usr/share/bash-completion/completions/litecoin-cli
+  install -Dm644 doc/man/litecoin-cli.1 \
+    "$pkgdir"/usr/share/man/man1/litecoin-cli.1
 
   install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
 }
@@ -97,11 +97,11 @@ package_litecoin-tx() {
   depends=(boost-libs openssl)
 
   cd $pkgbase-$pkgver
-  install -Dm755 src/bitcoin-tx "$pkgdir"/usr/bin/bitcoin-tx
-  install -Dm644 contrib/bitcoin-tx.bash-completion \
-    "$pkgdir"/usr/share/bash-completion/completions/bitcoin-tx
-  install -Dm644 doc/man/bitcoin-tx.1 \
-    "$pkgdir"/usr/share/man/man1/bitcoin-tx.1
+  install -Dm755 src/litecoin-tx "$pkgdir"/usr/bin/litecoin-tx
+  install -Dm644 contrib/litecoin-tx.bash-completion \
+    "$pkgdir"/usr/share/bash-completion/completions/litecoin-tx
+  install -Dm644 doc/man/litecoin-tx.1 \
+    "$pkgdir"/usr/share/man/man1/litecoin-tx.1
 
   install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
 }
