@@ -14,22 +14,26 @@ url="https://www.litecoin.org/"
 makedepends=('boost' 'libevent' 'qt5-base' 'qt5-tools' 'qrencode' 'miniupnpc' 'protobuf' 'zeromq')
 license=('MIT')
 source=("$pkgname-$pkgver.tar.gz::https://github.com/litecoin-project/litecoin/archive/v0.14.2.tar.gz"
+        "0001-Make-boost-multi_index-comparators-const.patch"
         "litecoin.sysusers"
         "litecoin.tmpfiles")
 sha256sums=('4db5473be17fc707acfa4bc5d13b5c07915fa8c28b404ca0e6969fecc41744b2'
+            'f302218b0366c2102a3447330684adcdb576217aba5d1bb157e73717d6734ce5'
             'a09cad7547298a96216f3dbc6a2503dc2bc0b47ffe747b12bcd9f9c4e104d922'
             '9e4506935cbabaa01a74768cfc89435305ec720ab0e4cc36b5608817f40e95eb')
 
 prepare() {
   cd "$pkgbase-$pkgver"
+  patch -Np1 -i "$srcdir/0001-Make-boost-multi_index-comparators-const.patch"
 }
 
 build() {
   cd $pkgbase-$pkgver
   
   ./autogen.sh
-  
-  ./configure CXXFLAGS="--param ggc-min-expand=1 --param ggc-min-heapsize=32768" --prefix=/usr --with-gui=qt5 --with-incompatible-bdb #LDFLAGS="-L$srcdir/db4/lib/ $LDFLAGS" CPPFLAGS="-I$srcdir/db4/include/ $CPPFLAGS"
+
+  # CXXFLAGS required to prevent out-of-memory errors on low-ram systems
+  ./configure CXXFLAGS="${CXXFLAGS} --param ggc-min-expand=1 --param ggc-min-heapsize=32768" --prefix=/usr --with-gui=qt5 --with-incompatible-bdb
   
   make
 }
@@ -48,9 +52,9 @@ package_litecoin-qt() {
   install -Dm755 src/qt/litecoin-qt "$pkgdir"/usr/bin/litecoin-qt
   install -Dm644 doc/man/litecoin-qt.1 \
     "$pkgdir"/usr/share/man/man1/litecoin-qt.1
-  install -Dm644 contrib/debian/litecoin-qt.desktop \
+  install -Dm644 contrib/debian/bitcoin-qt.desktop \
     "$pkgdir"/usr/share/applications/litecoin.desktop
-  install -Dm644 share/pixmaps/litecoin128.png \
+  install -Dm644 share/pixmaps/bitcoin128.png \
     "$pkgdir"/usr/share/pixmaps/litecoin128.png
 
   install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
@@ -62,13 +66,13 @@ package_litecoin-daemon() {
 
   cd $pkgbase-$pkgver
   install -Dm755 src/litecoind "$pkgdir"/usr/bin/litecoind
-  install -Dm644 contrib/litecoind.bash-completion \
+  install -Dm644 contrib/bitcoind.bash-completion \
     "$pkgdir"/usr/share/bash-completion/completions/litecoind
   install -Dm644 doc/man/litecoind.1 \
     "$pkgdir"/usr/share/man/man1/litecoind.1
-  install -Dm644 contrib/debian/examples/litecoin.conf \
+  install -Dm644 contrib/debian/examples/bitcoin.conf \
     "$pkgdir/usr/share/doc/$pkgname/examples/litecoin.conf"
-  install -Dm644 contrib/init/litecoind.service \
+  install -Dm644 contrib/init/bitcoind.service \
     "$pkgdir/usr/lib/systemd/system/litecoind.service"
   install -Dm644 "$srcdir/litecoin.sysusers" \
     "$pkgdir/usr/lib/sysusers.d/litecoin.conf"
@@ -84,7 +88,7 @@ package_litecoin-cli() {
 
   cd $pkgbase-$pkgver
   install -Dm755 src/litecoin-cli "$pkgdir"/usr/bin/litecoin-cli
-  install -Dm644 contrib/litecoin-cli.bash-completion \
+  install -Dm644 contrib/bitcoin-cli.bash-completion \
     "$pkgdir"/usr/share/bash-completion/completions/litecoin-cli
   install -Dm644 doc/man/litecoin-cli.1 \
     "$pkgdir"/usr/share/man/man1/litecoin-cli.1
@@ -98,7 +102,7 @@ package_litecoin-tx() {
 
   cd $pkgbase-$pkgver
   install -Dm755 src/litecoin-tx "$pkgdir"/usr/bin/litecoin-tx
-  install -Dm644 contrib/litecoin-tx.bash-completion \
+  install -Dm644 contrib/bitcoin-tx.bash-completion \
     "$pkgdir"/usr/share/bash-completion/completions/litecoin-tx
   install -Dm644 doc/man/litecoin-tx.1 \
     "$pkgdir"/usr/share/man/man1/litecoin-tx.1
