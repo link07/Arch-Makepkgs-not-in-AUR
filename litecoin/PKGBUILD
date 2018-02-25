@@ -15,16 +15,19 @@ makedepends=('boost' 'libevent' 'qt5-base' 'qt5-tools' 'qrencode' 'miniupnpc' 'p
 license=('MIT')
 source=("$pkgname-$pkgver.tar.gz::https://github.com/litecoin-project/litecoin/archive/v0.14.2.tar.gz"
         "0001-Make-boost-multi_index-comparators-const.patch"
+        "0002-Convert-Bitcoin-to-Litecoin.patch"
         "litecoin.sysusers"
         "litecoin.tmpfiles")
 sha256sums=('4db5473be17fc707acfa4bc5d13b5c07915fa8c28b404ca0e6969fecc41744b2'
             'f302218b0366c2102a3447330684adcdb576217aba5d1bb157e73717d6734ce5'
+            'c8ec3f395ed44bd7dd3f67bddcbf600b8fe13907a5723af54fb95fb9dddb1480'
             'a09cad7547298a96216f3dbc6a2503dc2bc0b47ffe747b12bcd9f9c4e104d922'
             '9e4506935cbabaa01a74768cfc89435305ec720ab0e4cc36b5608817f40e95eb')
 
 prepare() {
   cd "$pkgbase-$pkgver"
   patch -Np1 -i "$srcdir/0001-Make-boost-multi_index-comparators-const.patch"
+  patch -Np1 -i "$srcdir/0002-Convert-Bitcoin-to-Litecoin.patch"
 }
 
 build() {
