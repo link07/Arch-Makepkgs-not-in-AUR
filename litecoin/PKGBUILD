@@ -17,8 +17,8 @@ source=("$pkgname-$pkgver.tar.gz::https://github.com/litecoin-project/litecoin/a
         "litecoin.sysusers"
         "litecoin.tmpfiles")
 sha256sums=('4db5473be17fc707acfa4bc5d13b5c07915fa8c28b404ca0e6969fecc41744b2'
-            '6f70b0d3d5e4a3f78b15d8f49515cd33cbf0c9d2ac22f94f0d3fabb3f620e458'
-            'b769c977b193680f2f549997fd8e07f6aa507071dfd519d59255ab4c687ebfcd')
+            'a09cad7547298a96216f3dbc6a2503dc2bc0b47ffe747b12bcd9f9c4e104d922'
+            '9e4506935cbabaa01a74768cfc89435305ec720ab0e4cc36b5608817f40e95eb')
 
 prepare() {
   cd "$pkgbase-$pkgver"
