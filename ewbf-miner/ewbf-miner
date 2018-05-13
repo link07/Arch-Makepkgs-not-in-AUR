@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "Starting miner..."
+
+/usr/lib/ewbf-miner --config /etc/ewbf-miner/miner.cfg --fee 0 $@

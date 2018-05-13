@@ -1,0 +1,11 @@
+[Unit]
+Description=EWBF's CUDA Zcash miner
+After=network-online.target
+
+[Service]
+User=ewbf-miner
+Type=simple
+ExecStart=/usr/lib/ewbf-miner --config /etc/ewbf-miner/miner.cfg --fee 0
+
+[Install]
+WantedBy=multi-user.target
