@@ -1,0 +1,10 @@
+[Unit]
+Description=Run tc on bitcoin's (9333) and litecoin's (8333) ports
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/coin-tc 9333 8333
+
+[Install]
+WantedBy=multi-user.target

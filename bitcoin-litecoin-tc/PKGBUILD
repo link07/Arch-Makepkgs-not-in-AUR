@@ -1,0 +1,23 @@
+# $Id$
+# Maintainer : Tyler Holinka <TylerHolinka+arch@gmail.com>
+
+pkgname=coin-tc
+pkgdesc="Add systemd services and script to setup traffic shapping (through tc) for bitcoin, litecoin, etc."
+pkgver=1.0.0
+pkgrel=1
+arch=('any')
+depends=('iproute2')
+source=("coin-tc.sh"
+        "coin-tc.service")
+sha256sums=('9fe72868ea0efd11d157c20c73656c5bea03d7f376f2370b35f92ff4030e7feb'
+            'b348636b3cfb1e6b418c64f0b6856c1b1b0cea64b2508edb1dcbd1d699b6b546')
+
+prepare() {
+    echo "You probably want to edit coin-tc.sh before running makepkg to set up the interface you want to use / the speed you want to limit bitcoin and litecoin to"
+}
+
+package() {
+    install -Dm755 "$srcdir/coin-tc.sh" "$pkgdir/usr/bin/coin-tc"
+
+    install -Dm644 "$srcdir/coin-tc.service" "$pkgdir/usr/lib/systemd/system/coin-tc.service"
+}
