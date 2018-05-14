@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=ewbf-miner
 Type=simple
-ExecStartPre=/usr/bin/bash -c 'until ping -c1 www.google.com &>/dev/null; do :; done'
+ExecStartPre=/usr/bin/bash -c 'until ping -4 -c1 www.google.com &>/dev/null; do echo "ping failed"; done'
 ExecStart=/usr/lib/ewbf-miner --config /etc/ewbf-miner/miner.cfg --fee 0
 Restart=on-failure
 
