@@ -7,31 +7,34 @@
 #_dbver=4.8.30
 pkgbase=litecoin
 pkgname=('litecoin-daemon' 'litecoin-cli' 'litecoin-qt' 'litecoin-tx')
-pkgver=0.15.1
+pkgver=0.16.0rc1
 pkgrel=1
 arch=('any')
 url="https://www.litecoin.org/"
 makedepends=('boost' 'libevent' 'qt5-base' 'qt5-tools' 'qrencode' 'miniupnpc' 'protobuf' 'zeromq')
 license=('MIT')
 source=("$pkgname-$pkgver.tar.gz::https://github.com/litecoin-project/litecoin/archive/v$pkgver.tar.gz"
-        "0001-Convert-Bitcoin-to-Litecoin.patch"
+        "0001-Make-boost-multi_index-comparators-const.patch"
+        "0002-Convert-Bitcoin-to-Litecoin.patch"
         "litecoin.sysusers"
         "litecoin.tmpfiles")
-sha256sums=('570adae0d4a9567110967aba2ea5d90ce8c421313f453523c4fd23b9339c7d2b'
-            'c8ec3f395ed44bd7dd3f67bddcbf600b8fe13907a5723af54fb95fb9dddb1480'
+sha256sums=('4f911a63c381a0aaac26cb0c11c88f9db2ff2a1a12fa4312b6069b15a28cb797'
+            'f302218b0366c2102a3447330684adcdb576217aba5d1bb157e73717d6734ce5'
+            '39f66bdc0315d0ebe62ece5249a6cb9615e506eefc74d7eb542fb702c8efc69f'
             'a09cad7547298a96216f3dbc6a2503dc2bc0b47ffe747b12bcd9f9c4e104d922'
-            '5d925184fa6a4ca3ce37cc6953bcfc75264c06aad5d6e3be5c79da7341a6c79b')
-
+            'add1e3ee8fc71952c9cb94f7848f844a4305ef86ac5878b334f46761db08379f')
 prepare() {
   cd "$pkgbase-$pkgver"
-  patch -Np1 -i "$srcdir/0001-Convert-Bitcoin-to-Litecoin.patch"
+  
+  #patch -Np1 -i "$srcdir/0001-Make-boost-multi_index-comparators-const.patch"
+  patch -Np1 -i "$srcdir/0002-Convert-Bitcoin-to-Litecoin.patch"
+  
+  ./autogen.sh
 }
 
 build() {
   cd $pkgbase-$pkgver
   
-  ./autogen.sh
-
   # CXXFLAGS required to prevent out-of-memory errors on low-ram systems
   ./configure CXXFLAGS="${CXXFLAGS} --param ggc-min-expand=1 --param ggc-min-heapsize=32768" --prefix=/usr --with-gui=qt5 --with-incompatible-bdb
   
@@ -46,38 +49,29 @@ check() {
 
 package_litecoin-qt() {
   pkgdesc="Litecoin is a peer-to-peer network based digital currency - Qt"
-  depends=(boost-libs libevent qt5-base miniupnpc qrencode protobuf zeromq)
+  depends=(boost-libs libevent qt5-base miniupnpc libminiupnpc.so qrencode protobuf zeromq)
 
   cd $pkgbase-$pkgver
   install -Dm755 src/qt/litecoin-qt "$pkgdir"/usr/bin/litecoin-qt
-  install -Dm644 doc/man/litecoin-qt.1 \
-    "$pkgdir"/usr/share/man/man1/litecoin-qt.1
-  install -Dm644 contrib/debian/bitcoin-qt.desktop \
-    "$pkgdir"/usr/share/applications/litecoin.desktop
-  install -Dm644 share/pixmaps/bitcoin128.png \
-    "$pkgdir"/usr/share/pixmaps/litecoin128.png
+  install -Dm644 doc/man/litecoin-qt.1 "$pkgdir"/usr/share/man/man1/litecoin-qt.1
+  install -Dm644 contrib/debian/bitcoin-qt.desktop "$pkgdir"/usr/share/applications/litecoin.desktop
+  install -Dm644 share/pixmaps/bitcoin128.png "$pkgdir"/usr/share/pixmaps/litecoin128.png
 
   install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
 }
 
 package_litecoin-daemon() {
   pkgdesc="Litecoin is a peer-to-peer network based digital currency - daemon"
-  depends=(boost-libs libevent miniupnpc zeromq)
+  depends=(boost-libs libevent miniupnpc libminiupnpc.so zeromq)
 
   cd $pkgbase-$pkgver
   install -Dm755 src/litecoind "$pkgdir"/usr/bin/litecoind
-  install -Dm644 contrib/bitcoind.bash-completion \
-    "$pkgdir"/usr/share/bash-completion/completions/litecoind
-  install -Dm644 doc/man/litecoind.1 \
-    "$pkgdir"/usr/share/man/man1/litecoind.1
-  install -Dm644 contrib/debian/examples/bitcoin.conf \
-    "$pkgdir/usr/share/doc/$pkgname/examples/litecoin.conf"
-  install -Dm644 contrib/init/bitcoind.service \
-    "$pkgdir/usr/lib/systemd/system/litecoind.service"
-  install -Dm644 "$srcdir/litecoin.sysusers" \
-    "$pkgdir/usr/lib/sysusers.d/litecoin.conf"
-  install -Dm644 "$srcdir/litecoin.tmpfiles" \
-    "$pkgdir/usr/lib/tmpfiles.d/litecoin.conf"
+  install -Dm644 contrib/bitcoind.bash-completion "$pkgdir"/usr/share/bash-completion/completions/litecoind
+  install -Dm644 doc/man/litecoind.1 "$pkgdir"/usr/share/man/man1/litecoind.1
+  install -Dm644 contrib/debian/examples/bitcoin.conf "$pkgdir/usr/share/doc/$pkgname/examples/litecoin.conf"
+  install -Dm644 contrib/init/bitcoind.service "$pkgdir/usr/lib/systemd/system/litecoind.service"
+  install -Dm644 "$srcdir/litecoin.sysusers" "$pkgdir/usr/lib/sysusers.d/litecoin.conf"
+  install -Dm644 "$srcdir/litecoin.tmpfiles" "$pkgdir/usr/lib/tmpfiles.d/litecoin.conf"
 
   install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
 }
@@ -88,10 +82,8 @@ package_litecoin-cli() {
 
   cd $pkgbase-$pkgver
   install -Dm755 src/litecoin-cli "$pkgdir"/usr/bin/litecoin-cli
-  install -Dm644 contrib/bitcoin-cli.bash-completion \
-    "$pkgdir"/usr/share/bash-completion/completions/litecoin-cli
-  install -Dm644 doc/man/litecoin-cli.1 \
-    "$pkgdir"/usr/share/man/man1/litecoin-cli.1
+  install -Dm644 contrib/bitcoin-cli.bash-completion "$pkgdir"/usr/share/bash-completion/completions/litecoin-cli
+  install -Dm644 doc/man/litecoin-cli.1 "$pkgdir"/usr/share/man/man1/litecoin-cli.1
 
   install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
 }
@@ -102,10 +94,8 @@ package_litecoin-tx() {
 
   cd $pkgbase-$pkgver
   install -Dm755 src/litecoin-tx "$pkgdir"/usr/bin/litecoin-tx
-  install -Dm644 contrib/bitcoin-tx.bash-completion \
-    "$pkgdir"/usr/share/bash-completion/completions/litecoin-tx
-  install -Dm644 doc/man/litecoin-tx.1 \
-    "$pkgdir"/usr/share/man/man1/litecoin-tx.1
+  install -Dm644 contrib/bitcoin-tx.bash-completion "$pkgdir"/usr/share/bash-completion/completions/litecoin-tx
+  install -Dm644 doc/man/litecoin-tx.1 "$pkgdir"/usr/share/man/man1/litecoin-tx.1
 
   install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
 }

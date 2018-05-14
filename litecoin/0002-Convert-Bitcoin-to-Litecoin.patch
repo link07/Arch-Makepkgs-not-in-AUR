@@ -150,68 +150,84 @@ index a83d2979e..e8b38e0f6 100644
  # Local variables:
  # mode: shell-script
 diff --git a/contrib/bitcoind.bash-completion b/contrib/bitcoind.bash-completion
-index af87e97d8..ff0e6de73 100644
+index cccd4bde0..f35c7e016 100644
 --- a/contrib/bitcoind.bash-completion
 +++ b/contrib/bitcoind.bash-completion
-@@ -3,13 +3,13 @@
+@@ -1,15 +1,15 @@
+-# bash programmable completion for bitcoind(1) and bitcoin-qt(1)
+-# Copyright (c) 2012-2016 The Bitcoin Core developers
++# bash programmable completion for litecoind(1) and litecoin-qt(1)
++# Copyright (c) 2012-2016 The litecoin Core developers
  # Distributed under the MIT software license, see the accompanying
  # file COPYING or http://www.opensource.org/licenses/mit-license.php.
- 
+
 -_bitcoind() {
 +_litecoind() {
      local cur prev words=() cword
 -    local bitcoind
 +    local litecoind
- 
+
 -    # save and use original argument to invoke bitcoind for -help
 +    # save and use original argument to invoke litecoind for -help
      # it might not be in $PATH
 -    bitcoind="$1"
 +    litecoind="$1"
- 
+
      COMPREPLY=()
      _get_comp_words_by_ref -n = cur prev words cword
 @@ -33,7 +33,7 @@ _bitcoind() {
-             # only parse -help if senseful
+             # only parse -help if sensible
              if [[ -z "$cur" || "$cur" =~ ^- ]]; then
                  local helpopts
 -                helpopts=$($bitcoind -help 2>&1 | awk '$1 ~ /^-/ { sub(/=.*/, "="); print $1 }' )
 +                helpopts=$($litecoind -help 2>&1 | awk '$1 ~ /^-/ { sub(/=.*/, "="); print $1 }' )
                  COMPREPLY=( $( compgen -W "$helpopts" -- "$cur" ) )
              fi
- 
+
 @@ -45,7 +45,7 @@ _bitcoind() {
              ;;
      esac
  } &&
 -complete -F _bitcoind bitcoind bitcoin-qt
 +complete -F _litecoind litecoind litecoin-qt
- 
+
  # Local variables:
  # mode: shell-script
 diff --git a/contrib/init/bitcoind.service b/contrib/init/bitcoind.service
-index 9132957c3..b8a0f8295 100644
+index ee113d761..c05fea141 100644
 --- a/contrib/init/bitcoind.service
 +++ b/contrib/init/bitcoind.service
-@@ -1,15 +1,15 @@
+@@ -1,23 +1,23 @@
+ # It is not recommended to modify this file in-place, because it will
+ # be overwritten during package upgrades. If you want to add further
+ # options or overwrite existing ones then use
+-# $ systemctl edit bitcoind.service
++# $ systemctl edit litecoind.service
+ # See "man systemd.service" for details.
+
+ # Note that almost all daemon options could be specified in
+-# /etc/bitcoin/bitcoin.conf
++# /etc/litecoin/litecoin.conf
+
  [Unit]
--Description=Bitcoin's distributed currency daemon
-+Description=Litecoin's distributed currency daemon
+-Description=Bitcoin daemon
++Description=litecoin daemon
  After=network.target
- 
+
  [Service]
+-ExecStart=/usr/bin/bitcoind -daemon -conf=/etc/bitcoin/bitcoin.conf -pid=/run/bitcoind/bitcoind.pid
+-# Creates /run/bitcoind owned by bitcoin
+-RuntimeDirectory=bitcoind
 -User=bitcoin
--Group=bitcoin
++ExecStart=/usr/bin/litecoind -daemon -conf=/etc/litecoin/litecoin.conf -pid=/run/litecoind/litecoind.pid
++# Creates /run/litecoind owned by litecoin
++RuntimeDirectory=litecoind
 +User=litecoin
-+Group=litecoin
- 
  Type=forking
--PIDFile=/var/lib/bitcoind/bitcoind.pid
--ExecStart=/usr/bin/bitcoind -daemon -pid=/var/lib/bitcoind/bitcoind.pid \
---conf=/etc/bitcoin/bitcoin.conf -datadir=/var/lib/bitcoind -disablewallet
-+PIDFile=/var/lib/litecoind/litecoind.pid
-+ExecStart=/usr/bin/litecoind -daemon -pid=/var/lib/litecoind/litecoind.pid \
-+-conf=/etc/litecoin/litecoin.conf -datadir=/var/lib/litecoind -disablewallet
- 
- Restart=always
+-PIDFile=/run/bitcoind/bitcoind.pid
++PIDFile=/run/litecoind/litecoind.pid
+ Restart=on-failure
  PrivateTmp=true
+
+--
+2.17.0
