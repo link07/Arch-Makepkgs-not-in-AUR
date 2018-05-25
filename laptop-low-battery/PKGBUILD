@@ -1,0 +1,24 @@
+# Maintainer: link07
+pkgname=laptop-low-battery
+pkgrel=1
+pkgver=v1.0.0
+pkgdesc="Checks battery level and hibernates if level is less than 5%"
+arch=('x86_64')
+url=''
+license=('')
+depends=("acpi")
+options=()
+source_x86_64=('laptop-low-battery.service'
+                          'laptop-low-battery.timer'
+                          'laptop-low-battery.sh')
+sha256sums_x86_64=('1b68821bae61caf8e3a37de8f2d8a956255b89c46f84cbea1053356b2e10ea30'
+                   '90b6bac4b8f2a6dfa7dc51748c01ff8387229cd8249d33da198f3e7c1c8256b6'
+                   '447efe2070e8feac0aecb206df5139d5588b6b0ad9755afbe4e47f64862b3ec1')
+
+package(){
+	install -Dm644 laptop-low-battery.service "$pkgdir"/usr/lib/systemd/system/laptop-low-battery.service
+    install -Dm644 laptop-low-battery.timer "$pkgdir"/usr/lib/systemd/system/laptop-low-battery.timer
+    install -Dm755 laptop-low-battery.sh "$pkgdir"/usr/bin/laptop-low-battery
+
+    #echo "Enable the timer: systemctl enable laptop-low-battery.timer"
+}

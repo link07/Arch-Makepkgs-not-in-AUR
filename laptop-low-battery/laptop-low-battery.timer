@@ -1,0 +1,9 @@
+[Unit]
+Description=Check for Low Battery Every 1m
+
+[Timer]
+OnUnitActiveSec=1m
+OnBootSec=1m
+
+[Install]
+WantedBy=timers.target
