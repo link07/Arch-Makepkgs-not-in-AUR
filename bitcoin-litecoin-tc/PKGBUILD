@@ -9,7 +9,7 @@ arch=('any')
 depends=('iproute2')
 source=("coin-tc.sh"
         "coin-tc.service")
-sha256sums=('9fe72868ea0efd11d157c20c73656c5bea03d7f376f2370b35f92ff4030e7feb'
+sha256sums=('e5771b5d2a73e7ba1089c7eefac0b4545aa0096353ed8f6d8ab1be2e6f09ce42'
             'b348636b3cfb1e6b418c64f0b6856c1b1b0cea64b2508edb1dcbd1d699b6b546')
 
 prepare() {

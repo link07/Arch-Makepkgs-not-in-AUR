@@ -35,7 +35,7 @@ fi
 #limit of the network interface in question [CHANGE TO YOUR OWN]
 LINKCEIL="1gbit"
 #limit outbound Bitcoin protocol traffic to this rate [CHANGE TO YOUR OWN]
-LIMIT="500kbit"
+LIMIT="5Mbit"
 #defines the IPv4 address space for which you wish to disable rate limiting (only allow localhost)
 LOCALNET_V4="127.0.0.0/8"
 #defines the IPv6 address space for which you wish to disable rate limiting (only allow localhost)
