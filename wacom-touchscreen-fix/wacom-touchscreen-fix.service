@@ -1,0 +1,11 @@
+[Unit]
+Description=Fix touchscreen after resume
+After=suspend.target
+
+[Service]
+Type=oneshot
+ExecStartPre=-/usr/bin/rmmod wacom
+ExecStart=/usr/bin/modprobe wacom
+
+[Install]
+WantedBy=suspend.target

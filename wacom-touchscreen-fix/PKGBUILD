@@ -1,0 +1,19 @@
+# Maintainer: link07
+pkgname=wacom-touchscreen-fix
+pkgrel=1
+pkgver=v1.0.0
+pkgdesc="Removes and Readds wacom touchscreen driver on wake from suspend"
+arch=('x86_64')
+url=''
+license=('')
+depends=()
+options=()
+source_x86_64=('wacom-touchscreen-fix.service')
+sha256sums_x86_64=('4dce714fdba117d616d2bc49574ec7b88e1a3722dc98c1b0d80ce9495635aad4')
+
+package(){
+	install -Dm644 wacom-touchscreen-fix.service "$pkgdir"/usr/lib/systemd/system/wacom-touchscreen-fix.service
+
+    #echo "Enable the service: systemctl enable wacom-touchscreen-fix.service"
+}
+
