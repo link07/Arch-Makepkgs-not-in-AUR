@@ -7,7 +7,7 @@
 #_dbver=4.8.30
 pkgbase=litecoin
 pkgname=('litecoin-daemon' 'litecoin-cli' 'litecoin-qt' 'litecoin-tx')
-pkgver=0.16.0rc1
+pkgver=0.16.0
 pkgrel=1
 arch=('any')
 url="https://www.litecoin.org/"
@@ -18,7 +18,7 @@ source=("$pkgname-$pkgver.tar.gz::https://github.com/litecoin-project/litecoin/a
         "0002-Convert-Bitcoin-to-Litecoin.patch"
         "litecoin.sysusers"
         "litecoin.tmpfiles")
-sha256sums=('4f911a63c381a0aaac26cb0c11c88f9db2ff2a1a12fa4312b6069b15a28cb797'
+sha256sums=('8364a69f05cec64e1fd492d41372552cdde86358d22bb0e074dbf917e65371a0'
             'f302218b0366c2102a3447330684adcdb576217aba5d1bb157e73717d6734ce5'
             '39f66bdc0315d0ebe62ece5249a6cb9615e506eefc74d7eb542fb702c8efc69f'
             'a09cad7547298a96216f3dbc6a2503dc2bc0b47ffe747b12bcd9f9c4e104d922'
