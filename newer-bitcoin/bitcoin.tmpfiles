@@ -1,0 +1,2 @@
+d /var/lib/bitcoin 0775 bitcoin bitcoin - -
+d /etc/bitcoin     0775 bitcoin bitcoin - -
