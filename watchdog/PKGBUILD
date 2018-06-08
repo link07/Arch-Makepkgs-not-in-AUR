@@ -1,0 +1,49 @@
+# $Id: PKGBUILD 310007 2017-11-15 14:11:34Z foutrelis $
+# Maintainer: Thomas Bächler <thomas@archlinux.org>
+
+pkgname=watchdog
+pkgver=5.15
+pkgrel=2
+pkgdesc="Watchdog daemon"
+arch=(any)
+url="http://sourceforge.net/projects/watchdog"
+license=('GPL')
+depends=('glibc') #'libtirpc') not required, because it doesn't currently build with it
+optdepends=('logrotate')
+backup=(etc/watchdog.conf)
+source=(http://downloads.sourceforge.net/${pkgname}/${pkgname}-${pkgver}.tar.gz
+        watchdog.systemd
+        watchdog.logrotate)
+sha256sums=('ffdc865137ad5d8e53664bd22bad4de6ca136d1b4636720320cb52af0c18947c'
+            '67bd41b592cddbf02811817c8dcc24fc65f551936ef40b7c706b19744b279d46'
+            '092648b1a4eef8f8e870a88f014e1adc4c45851bc664e3984eed3ef43b615168')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    
+    # should theoritically compile using tirpc, but it leads to linker errors
+    #CPPFLAGS="$CPPFLAGS -I/usr/include/tirpc"
+    #LIBS="$LIBS -l/usr/lib/libtirpc.so"
+    #LIBS="$LIBS -ltirpc"
+
+    # compile with nsf disabeld since tirpc doesn't work 
+    ./configure \
+	    --disable-nfs \
+        --prefix=/usr \
+        --sbindir=/usr/bin \
+	    --mandir=/usr/share/man \
+	    --sysconfdir=/etc \
+	    --localstatedir=/var \
+	    --with-pidfile=/run/watchdog.pid \
+	    --with-ka_pidfile=/run/wd_keepalive.pid
+  
+    make
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+
+  make install DESTDIR="${pkgdir}"
+  install -D -m644 "${srcdir}"/watchdog.systemd "${pkgdir}"/usr/lib/systemd/system/watchdog.service
+  install -D -m644 "${srcdir}"/watchdog.logrotate "${pkgdir}"/etc/logrotate.d/watchdog
+}
