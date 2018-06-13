@@ -1,0 +1,21 @@
+commit 9c64093165df0aaaceccd438f4b6c886bbb20846
+Author: Tyler Holinka <1685504+tholinka@users.noreply.github.com>
+Date:   Wed Jun 13 10:18:26 2018 -0600
+
+    Remove utf-8 X for an ascii X
+    
+    systemd can't display utf-8 characters in it's log
+
+diff --git a/lib/utils/logger.js b/lib/utils/logger.js
+index b50e68f..ebcf06e 100644
+--- a/lib/utils/logger.js
++++ b/lib/utils/logger.js
+@@ -86,7 +86,7 @@ var ENV_VERBOSITY = process.env.VERBOSITY || 2;
+ 	},
+ 	{
+ 		name: "error",
+-		sign: '=✘=',
++		sign: '=X=',
+ 		signColor: chalk.red,
+ 		messageColor: chalk.bold.red,
+ 		formatter: function (sign, message)

@@ -7,31 +7,44 @@ _commit=bdc192ebb76fc9964ef0da83ee88bc86ba69c052
 pkgrel=1
 arch=(any)
 url="https://www.github.com/cubedro/eth-net-intelligence-api"
-license=('LGPLG v3.0')
+license=('LGPL3')
 source=("git+https://github.com/cubedro/eth-net-intelligence-api.git#commit=${_commit}"
-        "eth-net-intelligence-api.service")
+        "eth-net-intelligence-api.service"
+        "0001-fix-systemd-log.patch")
 sha256sums=('SKIP'
-            '081234c765e0c447555a82f0c0e6fe13a17b9cbbaa69f2af9ac74bf7b7975a65')
+            '9b578a529b773a2cea3f801c94c25807c3f84a642fd9e3d27eab52e8f725cac3'
+            '9fcec84d7407fcea3b8bff2188159fefc4cf9aca60b20d9bcbe25fcf0a994505')
 makedepends=("npm")
-depends=("nodejs" "pm2")
+depends=("nodejs")
 install="$pkgname".install
+
+prepare() {
+  cd "$pkgname"
+  patch -Np1 -i "../0001-fix-systemd-log.patch"
+}
 
 build() {
   cd "$pkgname"
   
   npm install
+
+  # patch node modules to use /opt
+  # the app works fine without this, but this is more correct
+  # this *will* break if $srcdir contains any |'s
+  find node_modules -type f -exec \
+    sed -i "s|$srcdir|/opt|g" {} +
 }
 
 package() {
   cd "$pkgname"
+  
+  _files=(app.js package.json)
 
-  _files=(app.js app.json.example package.json package-lock.json)
   for i in ${_files[@]}; do
     install -Dm644 "$i" "$pkgdir"/opt/"$pkgname"/"$i"
   done
 
-  cp lib "$pkgdir"/opt/$pkgname -r
-  cp node_modules "$pkgdir"/opt/$pkgname -r
+  cp lib/ node_modules/ "$pkgdir"/opt/"$pkgname"/ -r
 
   install -Dm644 ../eth-net-intelligence-api.service "$pkgdir"/usr/lib/systemd/user/eth-net-intelligence-api.service
 }

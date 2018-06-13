@@ -1,13 +1,31 @@
 [Unit]
-Description=Ethstats.net communicator
+Description=Pushes data from an Ethereum node to Ethstats.net
 After=network.target
+# pick one
+#Requires=parity.service geth.service
 
 [Service]
-Type=one
-RemainAfterExit=yes
-ExecStart=/usr/bin/pm2 start /opt/eth-net-intelligence-api/app.json
-ExecReload=/usr/bin/pm2 reload node-app
-ExecStop=/usr/bin/pm2 stop node-app
+# tell the client we're in production environment
+Environment="NODE_ENV=production"
+# eth JSON-RPC host
+Environment="RPC_HOST=localhost"
+# eth JSON-RPC port
+Environment="RPC_PORT=8545"
+# eth listening port (only used for display)
+Environment="LISTENING_PORT=30303"
+# whatever you wish to name your node
+Environment="INSTANCE_NAME="
+# (optional) add your contact details here if you wish (email/skype)
+Environment="CONTACT_DETAILS="
+# path to eth-netstats WebSockets api server
+Environment="WS_SERVER=wss://rpc.ethstats.net"
+# WebSockets api server secret used for login
+Environment="WS_SECRET=see http://forum.ethereum.org/discussion/2112/how-to-add-yourself-to-the-stats-dashboard-its-not-automatic"
+# // Set the verbosity (0 = silent, 1 = error, warn, 2 = error, warn, info, success, 3 = all logs)
+Environment="VERBOSITY=1"
+
+Type=simple
+ExecStart=/usr/bin/node /opt/eth-net-intelligence-api/app.js
 
 [Install]
 WantedBy=default.target

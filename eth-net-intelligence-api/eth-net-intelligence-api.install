@@ -1,3 +1,7 @@
 post_install() {
-    echo "Copy /opt/eth-net-intelligence-api/app.json.example to app.json and edit to your liking"
+    echo "> INSTANCE_NAME and WS_SECRET *MUST* be set or starting the service does nothing"
+    echo ">> do this by running \"systemctl --user edit eth-net-intelligence-api.service\""
+    echo "> See /usr/lib/systemd/user/eth-net-intelligence-api.service for the environment names"
+    echo;
+    echo "> Also, you probably set a \"Requires=\" of parity or geth, otherwise it just crashes on the first startup because it can't conenct" 
 }
