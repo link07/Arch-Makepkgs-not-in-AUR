@@ -1,0 +1,39 @@
+# $Id$
+
+pkgname=eth-net-intelligence-api
+pkgdesc="Interface between ethstats.net and an Ethereium node"
+pkgver=20160401
+_commit=bdc192ebb76fc9964ef0da83ee88bc86ba69c052
+pkgrel=1
+arch=(any)
+url="https://www.github.com/cubedro/eth-net-intelligence-api"
+license=('LGPLG v3.0')
+source=("git+https://github.com/cubedro/eth-net-intelligence-api.git#commit=${_commit}"
+        "eth-net-intelligence-api.service")
+sha256sums=('SKIP'
+            '081234c765e0c447555a82f0c0e6fe13a17b9cbbaa69f2af9ac74bf7b7975a65')
+makedepends=("npm")
+depends=("nodejs" "pm2")
+install="$pkgname".install
+
+build() {
+  cd "$pkgname"
+  
+  npm install
+}
+
+package() {
+  cd "$pkgname"
+
+  _files=(app.js app.json.example package.json package-lock.json)
+  for i in ${_files[@]}; do
+    install -Dm644 "$i" "$pkgdir"/opt/"$pkgname"/"$i"
+  done
+
+  cp lib "$pkgdir"/opt/$pkgname -r
+  cp node_modules "$pkgdir"/opt/$pkgname -r
+
+  install -Dm644 ../eth-net-intelligence-api.service "$pkgdir"/usr/lib/systemd/user/eth-net-intelligence-api.service
+}
+
+# vim:set ts=2 sw=2 et:

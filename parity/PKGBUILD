@@ -1,0 +1,43 @@
+# $Id$
+# Maintainer: Nicola Squartini <tensor5@gmail.com>
+
+pkgname=parity
+pkgver=1.11.3
+#_pkgsubver="ci5"
+# actual pkg ver is just the pkgver if we are on an official release
+_actualpkgver="$pkgver"
+# but if there is a subver, then we're on an alpha/beta
+if [ -n "$_pkgsubver" ]; then
+    # pacman packages can't have a dash in the version info, but that is the naming that parity uses for alpha/beta
+    _actualpkgver="${pkgver}-${_pkgsubver}"
+    pkgver="${pkgver}${_pkgsubver}"
+fi
+
+pkgrel=1
+pkgdesc='Fast, light, robust Ethereum implementation'
+arch=('x86_64')
+url='https://parity.io/'
+license=('GPL3')
+depends=('libsystemd')
+makedepends=('git' 'rust' 'systemd')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/paritytech/parity/archive/v${_actualpkgver}.tar.gz"
+        'parity.service')
+sha256sums=('29d11d142b564b5112ce28d0ee25db16bba3391fe801de0d04c24c35fdc50009'
+            '2b3714df9417fa11b7636114b8a5f126c2f6fd3934e74d81bdc85061e8d6e737')
+
+build() {
+    cd "$pkgname"-"$_actualpkgver"
+
+    cargo build --release --features final
+    cargo build --release -p evmbin
+    cargo build --release -p ethstore-cli
+    cargo build --release -p ethkey-cli
+}
+
+package() {
+    cd "$pkgname"-"$_actualpkgver"
+
+    install -Dm755 -t "${pkgdir}"/usr/bin target/release/{ethstore,parity,parity-evm}
+    install -Dm755 target/release/ethkey "${pkgdir}"/usr/bin/parity-ethkey
+    install -Dm644 -t "${pkgdir}"/usr/lib/systemd/user ../parity.service
+}

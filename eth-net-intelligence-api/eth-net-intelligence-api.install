@@ -1,0 +1,3 @@
+post_install() {
+    echo "Copy /opt/eth-net-intelligence-api/app.json.example to app.json and edit to your liking"
+}

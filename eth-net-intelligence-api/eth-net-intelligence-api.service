@@ -1,0 +1,13 @@
+[Unit]
+Description=Ethstats.net communicator
+After=network.target
+
+[Service]
+Type=one
+RemainAfterExit=yes
+ExecStart=/usr/bin/pm2 start /opt/eth-net-intelligence-api/app.json
+ExecReload=/usr/bin/pm2 reload node-app
+ExecStop=/usr/bin/pm2 stop node-app
+
+[Install]
+WantedBy=default.target
