@@ -1,0 +1,13 @@
+# $Id$
+pkgname=path-of-exile-wine-libs
+pkgdesc="The needed libs to run path of exile in wine"
+pkgver=1.0.0
+pkgrel=1
+arch=('any')
+depends=('lib32-libldap' 'lib32-alsa-plugins' 'lib32-libpulse' 'lib32-openal')
+source=("path-of-exile.sh")
+sha256sums=('3899d58a2ab3e70b56fa524257f764af859a983d4d2e0d89d7b69cb7857a71fc')
+
+package() {
+    install -Dm755 "$srcdir/path-of-exile.sh" "$pkgdir/usr/bin/path-of-exile"
+}
