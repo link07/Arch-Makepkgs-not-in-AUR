@@ -7,28 +7,25 @@
 #_dbver=4.8.30
 pkgbase=litecoin
 pkgname=('litecoin-daemon' 'litecoin-cli' 'litecoin-qt' 'litecoin-tx')
-pkgver=0.16.0
+pkgver=0.16.2
 pkgrel=1
 arch=('any')
 url="https://www.litecoin.org/"
 makedepends=('boost' 'libevent' 'qt5-base' 'qt5-tools' 'qrencode' 'miniupnpc' 'protobuf' 'zeromq')
 license=('MIT')
 source=("$pkgname-$pkgver.tar.gz::https://github.com/litecoin-project/litecoin/archive/v$pkgver.tar.gz"
-        "0001-Make-boost-multi_index-comparators-const.patch"
-        "0002-Convert-Bitcoin-to-Litecoin.patch"
+        "0001-Convert-Bitcoin-to-Litecoin.patch"
         "litecoin.sysusers"
         "litecoin.tmpfiles")
-sha256sums=('8364a69f05cec64e1fd492d41372552cdde86358d22bb0e074dbf917e65371a0'
-            'f302218b0366c2102a3447330684adcdb576217aba5d1bb157e73717d6734ce5'
+sha256sums=('40e5f7d6574e46081f7fc67f0788db0fe2eec067328d484f0df6369310d1ab54'
             '39f66bdc0315d0ebe62ece5249a6cb9615e506eefc74d7eb542fb702c8efc69f'
             'a09cad7547298a96216f3dbc6a2503dc2bc0b47ffe747b12bcd9f9c4e104d922'
             'add1e3ee8fc71952c9cb94f7848f844a4305ef86ac5878b334f46761db08379f')
 prepare() {
   cd "$pkgbase-$pkgver"
   
-  #patch -Np1 -i "$srcdir/0001-Make-boost-multi_index-comparators-const.patch"
-  patch -Np1 -i "$srcdir/0002-Convert-Bitcoin-to-Litecoin.patch"
-  
+  patch -Np1 -i "$srcdir/0001-Convert-Bitcoin-to-Litecoin.patch"
+
   ./autogen.sh
 }
 
@@ -36,7 +33,7 @@ build() {
   cd $pkgbase-$pkgver
   
   # CXXFLAGS required to prevent out-of-memory errors on low-ram systems
-  ./configure CXXFLAGS="${CXXFLAGS} --param ggc-min-expand=1 --param ggc-min-heapsize=32768" --prefix=/usr --with-gui=qt5 --with-incompatible-bdb
+  ./configure CXXFLAGS="--param ggc-min-expand=1 --param ggc-min-heapsize=32768 ${CXXFLAGS}" --prefix=/usr --with-gui=qt5 --with-incompatible-bdb
   
   make
 }
