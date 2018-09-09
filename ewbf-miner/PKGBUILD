@@ -1,6 +1,6 @@
 # Maintainer: TheGoliath
 pkgname=ewbf-miner
-pkgrel=6
+pkgrel=7
 _pkggit=0.3.4b
 pkgver=v0.3.4b
 pkgdesc="EWBF's CUDA Zcash miner"
@@ -8,7 +8,7 @@ arch=('x86_64')
 url="https://github.com/nanopool/ewbf-miner"
 license=('https://github.com/nanopool/ewbf-miner/blob/master/README.md')
 groups=('')
-depends=('nvidia-utils' 'opencl-nvidia' 'cuda-toolkit')
+depends=('nvidia-utils' 'opencl-nvidia')
 options=('!strip' '!emptydirs')
 source_x86_64=("https://github.com/nanopool/ewbf-miner/releases/download/${pkgver}/Zec.miner.${_pkggit}.Linux.Bin.tar.gz"
 	       "ewbf-miner"
