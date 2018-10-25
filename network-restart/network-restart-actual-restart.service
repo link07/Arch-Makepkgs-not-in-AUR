@@ -1,0 +1,6 @@
+[Unit]
+Description=Reboot Device
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/reboot 0

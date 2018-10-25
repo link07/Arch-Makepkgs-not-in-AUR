@@ -1,0 +1,11 @@
+[Unit]
+Description=Restarts computer if 192.168.1.1 is unreachable
+After=network.target
+OnFailure=network-restart-actual-restart.service
+   
+[Service]
+Type=oneshot
+ExecStart=ping -c 1 -t 1 -W 5 192.168.1.1
+
+[Install]
+WantedBy=multi-user.target
