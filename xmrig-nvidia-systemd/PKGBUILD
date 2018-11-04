@@ -1,0 +1,20 @@
+pkgname=xmrig-nvidia-systemd
+pkgrel=1
+pkgver=1
+pkgdesc="Systemd service file for xmring-nvidia"
+arch=('any')
+url=""
+license=('MIT')
+groups=('')
+depends=("xmrig-nvidia")
+source=("xmrig-nvidia.service"
+        "xmrig-nvidia.sysusers"
+        "xmrig-nvidia.tmpfiles")
+sha512sums=('76b194e2824576b47e4814746ab722a6d0f90533864d32514a0405e2ad42f4172b3389539979d66c6c819a224b17a7f1a2e2cb3701b95e4a6cf67533b67318c7'
+            '31876cb13b80d3b1c984977bee85253f60dbd8cd62b496a30648c97a01dc2cab794cee0e71b26a97056b847e007c54346ba96944bf27b1e255c3d4ea410fc060'
+            '5e37c0f46000909131a3aac994942ebdde6a68d2ce9ba695fa84e4bebd2b82cd66d14c054a74b34eb60547c9a859c283f79d0cced7e37da057f77b9a6bfafa83')
+package(){    
+	install -Dm644 "$srcdir/xmrig-nvidia.service" -t "$pkgdir/usr/lib/systemd/system/"
+    install -Dm644 "$srcdir/xmrig-nvidia.sysusers" "$pkgdir/usr/lib/sysusers.d/xmrig-nvidia.conf"
+    install -Dm644 "$srcdir/xmrig-nvidia.tmpfiles" "$pkgdir/usr/lib/tmpfiles.d/xmrig-nvidia.conf"
+}

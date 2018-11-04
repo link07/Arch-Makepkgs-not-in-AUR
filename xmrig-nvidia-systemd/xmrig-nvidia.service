@@ -1,0 +1,12 @@
+[Unit]
+Description=xmrig's nvidia monero miner
+After=network.target
+
+[Service]
+User=xmrig-nvidia
+Type=simple
+ExecStart=/usr/bin/xmrig-nvidia --config /etc/xmrig-nvidia/config.json
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
