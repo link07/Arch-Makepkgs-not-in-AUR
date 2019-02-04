@@ -1,0 +1,6 @@
+[Unit]
+Description=Restart wifi adapter
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/restart-wifi

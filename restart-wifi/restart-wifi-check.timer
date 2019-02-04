@@ -2,8 +2,8 @@
 Description=Check for network connectivity every 10mins
 
 [Timer]
-OnUnitActiveSec=10m
-OnBootSec=10m
+OnUnitActiveSec=1m
+OnBootSec=1m
 
 [Install]
 WantedBy=timers.target
