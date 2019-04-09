@@ -7,7 +7,7 @@
 #_dbver=4.8.30
 pkgbase=litecoin
 pkgname=('litecoin-daemon' 'litecoin-cli' 'litecoin-qt' 'litecoin-tx')
-pkgver=0.16.3
+pkgver=0.17.1rc1
 pkgrel=2
 arch=('any')
 url="https://www.litecoin.org/"
@@ -17,7 +17,7 @@ source=("https://github.com/litecoin-project/litecoin/archive/v$pkgver.tar.gz"
         "0001-Convert-Bitcoin-to-Litecoin.patch"
         "litecoin.sysusers"
         "litecoin.tmpfiles")
-sha256sums=('afdcf2fc8f343cef556ff3a930d363d9c714d03d7f13964e67f65194f82b37ad'
+sha256sums=('632e0dfcb6e0fb9aced6b45cc543dde40df47517c6d555e2fae46822143e3711'
             '82828b20fce58e127e6e47fdaafb0cd805b386315a314a2235479be5b398120a'
             'a09cad7547298a96216f3dbc6a2503dc2bc0b47ffe747b12bcd9f9c4e104d922'
             'add1e3ee8fc71952c9cb94f7848f844a4305ef86ac5878b334f46761db08379f')
@@ -51,7 +51,7 @@ package_litecoin-qt() {
   cd $pkgbase-$pkgver
   install -Dm755 src/qt/litecoin-qt "$pkgdir"/usr/bin/litecoin-qt
   install -Dm644 doc/man/litecoin-qt.1 "$pkgdir"/usr/share/man/man1/litecoin-qt.1
-  install -Dm644 contrib/debian/bitcoin-qt.desktop "$pkgdir"/usr/share/applications/litecoin.desktop
+  #install -Dm644 contrib/debian/bitcoin-qt.desktop "$pkgdir"/usr/share/applications/litecoin.desktop
   install -Dm644 share/pixmaps/bitcoin128.png "$pkgdir"/usr/share/pixmaps/litecoin128.png
 
   install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
@@ -65,7 +65,7 @@ package_litecoin-daemon() {
   install -Dm755 src/litecoind "$pkgdir"/usr/bin/litecoind
   install -Dm644 contrib/bitcoind.bash-completion "$pkgdir"/usr/share/bash-completion/completions/litecoind
   install -Dm644 doc/man/litecoind.1 "$pkgdir"/usr/share/man/man1/litecoind.1
-  install -Dm644 contrib/debian/examples/bitcoin.conf "$pkgdir/usr/share/doc/$pkgname/examples/litecoin.conf"
+  #install -Dm644 contrib/debian/examples/bitcoin.conf "$pkgdir/usr/share/doc/$pkgname/examples/litecoin.conf"
   install -Dm644 contrib/init/bitcoind.service "$pkgdir/usr/lib/systemd/system/litecoind.service"
   install -Dm644 "$srcdir/litecoin.sysusers" "$pkgdir/usr/lib/sysusers.d/litecoin.conf"
   install -Dm644 "$srcdir/litecoin.tmpfiles" "$pkgdir/usr/lib/tmpfiles.d/litecoin.conf"
