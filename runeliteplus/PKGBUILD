@@ -1,0 +1,79 @@
+# based off the runelite-git package
+pkgname=runeliteplus-git
+_pkgname=runelite
+pkgver=3215+g6590304f2
+pkgrel=1
+epoch=1
+pkgdesc="Open source Old School RuneScape client."
+arch=(any)
+license=('BSD')
+url="https://github.com/runelite-extended/runelite"
+# currently fails to compile on openjdk12
+depends=('java-environment=8' 'ttf-font')
+optdepends=('gvfs: enable links')
+makedepends=('gradle' 'java8-openjfx')
+provides=("runeliteplus")
+source=("git+${url}.git"
+        'runeliteplus.desktop'
+        'runeliteplus.png::https://camo.githubusercontent.com/55dd087f37053df66885f62850fdd5f3afe7ae5a/68747470733a2f2f692e696d6775722e636f6d2f4f56526451427a2e706e67')
+sha512sums=('SKIP'
+            'ced8abfcd9f73e0636139a832cc1b7b93e63937f10ad6fd4cc3439abe68e174501e3503aa7b239e4672386a9f1893305fc6bc2b617290e61b687018099536385'
+            '968ec7583c197d194df74f17838618aa13431d4fd54970a1c9c77c40b70ba720945823c0fe7b04882f6479a5357d2fab72bfb7ad9b7a2b520c6622d8704cf122')
+
+_JAVA_HOME="/usr/lib/jvm/java-8-openjdk"
+
+pkgver() {
+    cd "${srcdir}/${_pkgname}"
+
+	# this is how to get the actual version
+	# sadly we don't have access to the git repo yet, as it's just been bare-cloned
+	#export pkgver=$(grep "version = '" build.gradle | awk '{print $3}' | sed "s/'//g")
+
+	git describe --tags | sed 's/-/+/g' | cut -d '+' -f 3-5
+}
+
+
+build() {
+    cd ${srcdir}/${_pkgname}
+
+	# force java 8 to be used
+	export JAVA_HOME="$_JAVA_HOME"
+	echo "org.gradle.java.home=$_JAVA_HOME" >> gradle.properties
+
+	# we use system gradle instead of gradlew, which would download gradle instead
+	# also we do --no-daemon so that we don't leave a daemon process hanging around
+	# also don't run tests, they're broken a lot
+	gradle build --no-daemon -x test -x:client:checkstyleMain
+}
+
+package() {
+    client_jar=$(find ${srcdir}/${_pkgname}/runelite-client/build/libs -type f -name client-*-shaded.jar)
+
+	echo "found jar $client_jar"
+
+    install -D -m644 \
+        "${client_jar}" \
+        "${pkgdir}/usr/share/runeliteplus/RuneLite.jar"
+
+    install -D -m644 \
+        "${srcdir}/runeliteplus.desktop" \
+        "${pkgdir}/usr/share/applications/runeliteplus.desktop"
+
+    install -D -m644 \
+        "${srcdir}/runeliteplus.png" \
+        "${pkgdir}/usr/share/pixmaps/runeliteplus.png"
+
+    install -D -m644 \
+        "${srcdir}/${_pkgname}/LICENSE" \
+        "${pkgdir}/usr/share/licenses/${pkgname}"
+
+    install -D -m755 \
+        "/dev/null" \
+        "${pkgdir}/usr/bin/runeliteplus"
+
+    echo '#!/bin/sh' > "${pkgdir}/usr/bin/runeliteplus"
+    echo 'exec /usr/lib/jvm/java-8-openjdk/jre/bin/java -Dhttps.protocols=TLSv1.2 -jar /usr/share/runeliteplus/RuneLite.jar "$@"' >> "${pkgdir}/usr/bin/runeliteplus"
+
+}
+
+
