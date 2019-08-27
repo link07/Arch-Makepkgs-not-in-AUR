@@ -1,7 +1,7 @@
 # based off the runelite-git package
 pkgname=runeliteplus-git
 _pkgname=runelite
-pkgver=3215+g6590304f2
+pkgver=3270+gcbc07f18c
 pkgrel=1
 epoch=1
 pkgdesc="Open source Old School RuneScape client."
@@ -14,16 +14,18 @@ optdepends=('gvfs: enable links')
 makedepends=('gradle' 'java8-openjfx')
 provides=("runeliteplus")
 source=("git+${url}.git"
-        'runeliteplus.desktop'
-        'runeliteplus.png::https://camo.githubusercontent.com/55dd087f37053df66885f62850fdd5f3afe7ae5a/68747470733a2f2f692e696d6775722e636f6d2f4f56526451427a2e706e67')
+		'runeliteplus.desktop'
+		'runeliteplus.png::https://rawcdn.githack.com/runelite-extended/runelitepl.us/7949832e9c2ef6d4e4a225950132c20e54f58336/src/assets/icons/icon-512x512.png'
+		'runeliteplus.sh')
 sha512sums=('SKIP'
-            'ced8abfcd9f73e0636139a832cc1b7b93e63937f10ad6fd4cc3439abe68e174501e3503aa7b239e4672386a9f1893305fc6bc2b617290e61b687018099536385'
-            '968ec7583c197d194df74f17838618aa13431d4fd54970a1c9c77c40b70ba720945823c0fe7b04882f6479a5357d2fab72bfb7ad9b7a2b520c6622d8704cf122')
+			'ced8abfcd9f73e0636139a832cc1b7b93e63937f10ad6fd4cc3439abe68e174501e3503aa7b239e4672386a9f1893305fc6bc2b617290e61b687018099536385'
+			'd4afe6d853a1cacd50ea62fc06a05e3659a367a156287e52599af7ff5020427335ae3d83b8a7b170d9af645f6951dce47d5acd1d88d1f440652731becda661fe'
+			'c9ac304b111d77a18957267b8bfea6c36681326a02409909ce9bb0a0fda9aa79928055af2aa914847983370a4f4b276acf5c5a1438894354eaf5a6d244138270')
 
 _JAVA_HOME="/usr/lib/jvm/java-8-openjdk"
 
 pkgver() {
-    cd "${srcdir}/${_pkgname}"
+	cd "${srcdir}/${_pkgname}"
 
 	# this is how to get the actual version
 	# sadly we don't have access to the git repo yet, as it's just been bare-cloned
@@ -34,7 +36,7 @@ pkgver() {
 
 
 build() {
-    cd ${srcdir}/${_pkgname}
+	cd ${srcdir}/${_pkgname}
 
 	# force java 8 to be used
 	export JAVA_HOME="$_JAVA_HOME"
@@ -42,38 +44,31 @@ build() {
 
 	# we use system gradle instead of gradlew, which would download gradle instead
 	# also we do --no-daemon so that we don't leave a daemon process hanging around
-	# also don't run tests, they're broken a lot
-	gradle build --no-daemon -x test -x:client:checkstyleMain
+    # also don't run tests, they're broken a lot
+	gradle build --no-daemon -x test -x:client:checkstyleMain -x:runelite-api:checkstyleMain
 }
 
 package() {
-    client_jar=$(find ${srcdir}/${_pkgname}/runelite-client/build/libs -type f -name client-*-shaded.jar)
+	client_jar=$(find ${srcdir}/${_pkgname}/runelite-client/build/libs -type f -name client-*-shaded.jar)
 
-	echo "found jar $client_jar"
+	install -D -m644 \
+		"${client_jar}" \
+		"${pkgdir}/usr/share/runeliteplus/RuneLite.jar"
 
-    install -D -m644 \
-        "${client_jar}" \
-        "${pkgdir}/usr/share/runeliteplus/RuneLite.jar"
+	install -D -m644 \
+		"${srcdir}/runeliteplus.desktop" \
+		"${pkgdir}/usr/share/applications/runeliteplus.desktop"
 
-    install -D -m644 \
-        "${srcdir}/runeliteplus.desktop" \
-        "${pkgdir}/usr/share/applications/runeliteplus.desktop"
+	install -D -m644 \
+		"${srcdir}/runeliteplus.png" \
+		"${pkgdir}/usr/share/pixmaps/runeliteplus.png"
 
-    install -D -m644 \
-        "${srcdir}/runeliteplus.png" \
-        "${pkgdir}/usr/share/pixmaps/runeliteplus.png"
+	install -D -m644 \
+		"${srcdir}/${_pkgname}/LICENSE" \
+		"${pkgdir}/usr/share/licenses/${pkgname}"
 
-    install -D -m644 \
-        "${srcdir}/${_pkgname}/LICENSE" \
-        "${pkgdir}/usr/share/licenses/${pkgname}"
-
-    install -D -m755 \
-        "/dev/null" \
-        "${pkgdir}/usr/bin/runeliteplus"
-
-    echo '#!/bin/sh' > "${pkgdir}/usr/bin/runeliteplus"
-    echo 'exec /usr/lib/jvm/java-8-openjdk/jre/bin/java -Dhttps.protocols=TLSv1.2 -jar /usr/share/runeliteplus/RuneLite.jar "$@"' >> "${pkgdir}/usr/bin/runeliteplus"
-
+	install -D -m755 \
+		"${srcdir}/runeliteplus.sh" \
+		"${pkgdir}/usr/bin/runeliteplus"
 }
-
 
